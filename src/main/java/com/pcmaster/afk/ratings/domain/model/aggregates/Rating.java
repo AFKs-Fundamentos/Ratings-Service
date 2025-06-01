@@ -25,11 +25,11 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating>{
     @Getter
     @NotNull
     @NotBlank
-    @Column(name = "description", length = 300, nullable = false)
+    @Column(name = "description", length = 500, nullable = false)
     private String description;
 
     @Getter
-    @Min(0)
+    @Min(1)
     @Max(5)
     @Column(name = "punctuation", columnDefinition = "smallint", nullable = false)
     private int punctuation;
