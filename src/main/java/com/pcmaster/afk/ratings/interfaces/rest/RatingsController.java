@@ -104,6 +104,21 @@ public class RatingsController {
         return ResponseEntity.ok(ratingsResources);
     }
 
+    @Operation(
+            summary = "Ratings by Product",
+            description = "Fetch Ratings by Product Id",
+            operationId = "getByProductId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping("/product")
     public ResponseEntity<List<RatingResource>> getByProductId(@RequestParam(name = "productId") Long pId){
 
@@ -123,6 +138,21 @@ public class RatingsController {
         return ResponseEntity.ok(ratingsResources);
     }
 
+    @Operation(
+            summary = "Ratings by User",
+            description = "Fetch Ratings by User Id",
+            operationId = "getByUserId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping("/user")
     public ResponseEntity<List<RatingResource>> getByUserId(@RequestParam(name = "userId") Long uId){
 
@@ -142,6 +172,21 @@ public class RatingsController {
         return ResponseEntity.ok(ratingsResource);
     }
 
+    @Operation(
+            summary = "Ratings by Advisory",
+            description = "Fetch Ratings by Advisory Id",
+            operationId = "getByAdvisoryId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping("/advisory")
     public ResponseEntity<List<RatingResource>> getByAdvisoryId(@RequestParam(name = "advisoryId") Long aId){
 
