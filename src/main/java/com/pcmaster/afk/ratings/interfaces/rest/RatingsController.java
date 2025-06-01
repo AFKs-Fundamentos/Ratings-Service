@@ -3,7 +3,9 @@ package com.pcmaster.afk.ratings.interfaces.rest;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingByIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingsByProductIdQuery;
+import com.pcmaster.afk.ratings.domain.model.queries.GetRatingsByUserIdQuery;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.ProductId;
+import com.pcmaster.afk.ratings.domain.model.valueobjects.UserId;
 import com.pcmaster.afk.ratings.domain.services.RatingCommandService;
 import com.pcmaster.afk.ratings.domain.services.RatingQueryService;
 import com.pcmaster.afk.ratings.interfaces.rest.resources.CreateRatingResource;
@@ -121,5 +123,24 @@ public class RatingsController {
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(ratingsResources);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<RatingResource>> getByUserId(@RequestParam(name = "userId") Long uId){
+
+        if (uId == null ) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        UserId userId = new UserId(uId);
+
+        var getRatingsByUserIdQuery = new GetRatingsByUserIdQuery(userId);
+        var ratings = this.ratingQueryService.handle(getRatingsByUserIdQuery);
+
+        var ratingsResource = ratings.stream()
+                .map(RatingResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ratingsResource);
     }
 }

@@ -4,6 +4,7 @@ import com.pcmaster.afk.ratings.domain.model.aggregates.Rating;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingByIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingsByProductIdQuery;
+import com.pcmaster.afk.ratings.domain.model.queries.GetRatingsByUserIdQuery;
 import com.pcmaster.afk.ratings.domain.services.RatingQueryService;
 import com.pcmaster.afk.ratings.infrastructure.persistence.jpa.repositories.RatingRepository;
 import org.springframework.stereotype.Service;
@@ -33,5 +34,10 @@ public class RatingQueryServiceImpl implements RatingQueryService {
     @Override
     public List<Rating> handle(GetRatingsByProductIdQuery query) {
         return this.ratingRepository.findByProductId(query.productId());
+    }
+
+    @Override
+    public List<Rating> handle(GetRatingsByUserIdQuery query) {
+        return this.ratingRepository.findByUserId(query.userId());
     }
 }
