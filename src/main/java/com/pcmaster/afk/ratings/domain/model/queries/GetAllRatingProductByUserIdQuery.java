@@ -2,5 +2,5 @@ package com.pcmaster.afk.ratings.domain.model.queries;
 
 import com.pcmaster.afk.ratings.domain.model.valueobjects.UserId;
 
-public record GetRatingsByUserIdQuery(UserId userId) {
+public record GetAllRatingProductByUserIdQuery(UserId userId) {
 }

@@ -7,32 +7,26 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import com.pcmaster.afk.shared.domain.model.aggregates.AuditableAbstractAggregateRoot;
-import com.pcmaster.afk.ratings.domain.model.commands.CreateRatingCommand;
+import com.pcmaster.afk.ratings.domain.model.commands.CreateRatingProductCommand;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.AdvisoryId;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.ProductId;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.UserId;
 
 @Entity
-@Table(name = "ratings")
-public class Rating extends AuditableAbstractAggregateRoot<Rating>{
-
-    @Getter
-    @NotNull
-    @NotBlank
-    @Column(name = "type", length = 10, nullable = false)
-    private String type;
-
-    @Getter
-    @NotNull
-    @NotBlank
-    @Column(name = "description", length = 500, nullable = false)
-    private String description;
+@Table(name = "rating_product")
+public class RatingProduct extends AuditableAbstractAggregateRoot<RatingProduct>{
 
     @Getter
     @Min(1)
     @Max(5)
     @Column(name = "punctuation", columnDefinition = "smallint", nullable = false)
     private int punctuation;
+
+    @Getter
+    @NotNull
+    @NotBlank
+    @Column(name = "description", length = 500, nullable = false)
+    private String description;
 
     @Embedded
     @AttributeOverrides({
@@ -46,29 +40,19 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating>{
     })
     private ProductId productId;
 
-    @Embedded
-    @AttributeOverrides({
-            @AttributeOverride(name = "advisoryId", column = @Column(name = "advisory_id")),
-    })
-    private AdvisoryId advisoryId;
-
-
-    public Rating(String type, String description, int punctuation, Long userId, Long productId, Long advisoryId){
-        this.type = type;
-        this.description = description;
+    public RatingProduct(String description, int punctuation, Long userId, Long productId){
         this.punctuation = punctuation;
-        this. userId = new UserId(userId);
+        this.description = description;
+        this.userId = new UserId(userId);
         this.productId = new ProductId(productId);
-        this.advisoryId = new AdvisoryId(advisoryId);
     }
 
-    public Rating(){}
+    public RatingProduct(){}
 
-    public Rating(UserId userId, ProductId productId, AdvisoryId advisoryId){
+    public RatingProduct(UserId userId, ProductId productId){
         this();
         this.userId = userId;
         this.productId = productId;
-        this.advisoryId = advisoryId;
     }
 
     public Long getUserId(){
@@ -79,19 +63,13 @@ public class Rating extends AuditableAbstractAggregateRoot<Rating>{
         return productId.productId();
     }
 
-    public Long getAdvisoryId(){
-        return advisoryId.advisoryId();
-    }
-
     /**
      * Command implementation
      */
-    public Rating(CreateRatingCommand command){
-        this.type = command.type();
-        this.description = command.description();
+    public RatingProduct(CreateRatingProductCommand command){
         this.punctuation = command.punctuation();
-        this. userId = new UserId(command.userId());
+        this.description = command.description();
+        this.userId = new UserId(command.userId());
         this.productId = new ProductId(command.productId());
-        this.advisoryId = new AdvisoryId(command.advisoryId());
     }
 }

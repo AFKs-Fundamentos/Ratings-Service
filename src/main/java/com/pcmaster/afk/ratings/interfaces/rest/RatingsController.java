@@ -4,12 +4,12 @@ import com.pcmaster.afk.ratings.domain.model.queries.*;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.AdvisoryId;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.ProductId;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.UserId;
-import com.pcmaster.afk.ratings.domain.services.RatingCommandService;
-import com.pcmaster.afk.ratings.domain.services.RatingQueryService;
-import com.pcmaster.afk.ratings.interfaces.rest.resources.CreateRatingResource;
-import com.pcmaster.afk.ratings.interfaces.rest.resources.RatingResource;
-import com.pcmaster.afk.ratings.interfaces.rest.transform.CreateRatingCommandFromResourceAssembler;
-import com.pcmaster.afk.ratings.interfaces.rest.transform.RatingResourceFromEntityAssembler;
+import com.pcmaster.afk.ratings.domain.services.RatingProductCommandService;
+import com.pcmaster.afk.ratings.domain.services.RatingProductQueryService;
+import com.pcmaster.afk.ratings.interfaces.rest.resources.CreateRatingProductResource;
+import com.pcmaster.afk.ratings.interfaces.rest.resources.RatingProductResource;
+import com.pcmaster.afk.ratings.interfaces.rest.transform.CreateRatingProductCommandFromResourceAssembler;
+import com.pcmaster.afk.ratings.interfaces.rest.transform.RatingProductResourceFromEntityAssembler;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,16 +25,16 @@ import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", methods = { RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE })
 @RestController
-@RequestMapping(value = "/api/v1/ratings", produces = MediaType.APPLICATION_JSON_VALUE)
-@Tag(name = "Ratings", description = "Ratings Management Endpoints")
+@RequestMapping(value = "/api/v1/rating/product", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Rating Product", description = "Rating Product Management Endpoints")
 public class RatingsController {
 
-    private final RatingQueryService ratingQueryService;
-    private final RatingCommandService ratingCommandService;
+    private final RatingProductQueryService ratingProductQueryService;
+    private final RatingProductCommandService ratingProductCommandService;
 
-    public RatingsController(RatingQueryService ratingQueryService, RatingCommandService ratingCommandService){
-        this.ratingQueryService = ratingQueryService;
-        this.ratingCommandService = ratingCommandService;
+    public RatingsController(RatingProductQueryService ratingProductQueryService, RatingProductCommandService ratingProductCommandService){
+        this.ratingProductQueryService = ratingProductQueryService;
+        this.ratingProductCommandService = ratingProductCommandService;
     }
 
     @Operation(
@@ -47,7 +47,7 @@ public class RatingsController {
                             description = "Successful operation",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = CreateRatingResource.class)
+                                    schema = @Schema(implementation = CreateRatingProductResource.class)
                             )
                     ),
                     @ApiResponse (
@@ -61,21 +61,21 @@ public class RatingsController {
             }
     )
     @PostMapping
-    public ResponseEntity<RatingResource> createRating(@RequestBody CreateRatingResource resource){
+    public ResponseEntity<RatingProductResource> createRatingProduct(@RequestBody CreateRatingProductResource resource){
 
-        var createRatingCommand = CreateRatingCommandFromResourceAssembler
+        var createRatingProductCommand = CreateRatingProductCommandFromResourceAssembler
                 .toCommandFromResource(resource);
 
-        var ratingId = this.ratingCommandService.handle(createRatingCommand);
+        var ratingProductId = this.ratingProductCommandService.handle(createRatingProductCommand);
 
-        if(ratingId.equals(0L)){
+        if(ratingProductId.equals(0L)){
             return ResponseEntity.badRequest().build();
         }
 
-        var getRatingByIdQuery = new GetRatingByIdQuery(ratingId);
-        var optionalService = this.ratingQueryService.handle(getRatingByIdQuery);
+        var getRatingByIdQuery = new GetRatingProductByIdQuery(ratingProductId);
+        var optionalService = this.ratingProductQueryService.handle(getRatingByIdQuery);
 
-        var ratingResource = RatingResourceFromEntityAssembler.toResourceFromEntity(optionalService.get());
+        var ratingResource = RatingProductResourceFromEntityAssembler.toResourceFromEntity(optionalService.get());
         return new ResponseEntity<>(ratingResource, HttpStatus.CREATED);
     }
 
@@ -89,52 +89,18 @@ public class RatingsController {
                             description = "Successful operation",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = RatingResource.class)
+                                    schema = @Schema(implementation = RatingProductResource.class)
                             )
                     )
             }
     )
     @GetMapping
-    public ResponseEntity<List<RatingResource>> getAllRatings() {
-        var getAllRatingsQuery = new GetAllRatingsQuery();
-        var ratings = this.ratingQueryService.handle(getAllRatingsQuery);
+    public ResponseEntity<List<RatingProductResource>> getAllRatingsProduct() {
+        var getAllRatingsQuery = new GetAllRatingsProductQuery();
+        var ratings = this.ratingProductQueryService.handle(getAllRatingsQuery);
         var ratingsResources = ratings.stream()
-                .map(RatingResourceFromEntityAssembler::toResourceFromEntity)
+                .map(RatingProductResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(ratingsResources);
-    }
-
-    @Operation(
-            summary = "Ratings by Product",
-            description = "Fetch Ratings by Product Id",
-            operationId = "getByProductId",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Successful operation",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = RatingResource.class)
-                            )
-                    )
-            }
-    )
-    @GetMapping("/product")
-    public ResponseEntity<List<RatingResource>> getByProductId(@RequestParam(name = "productId") Long pId){
-
-        if (pId == null ) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        ProductId productId = new ProductId(pId);
-
-        var getRatingsByPIdQuery = new GetRatingsByProductIdQuery(productId);
-        var ratings = this.ratingQueryService.handle(getRatingsByPIdQuery);
-
-        var ratingsResources = ratings.stream()
-                .map(RatingResourceFromEntityAssembler::toResourceFromEntity)
-                .collect(Collectors.toList());
-
         return ResponseEntity.ok(ratingsResources);
     }
 
@@ -148,13 +114,13 @@ public class RatingsController {
                             description = "Successful operation",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = RatingResource.class)
+                                    schema = @Schema(implementation = RatingProductResource.class)
                             )
                     )
             }
     )
     @GetMapping("/user")
-    public ResponseEntity<List<RatingResource>> getByUserId(@RequestParam(name = "userId") Long uId){
+    public ResponseEntity<List<RatingProductResource>> getByUserId(@RequestParam(name = "userId") Long uId){
 
         if (uId == null ) {
             return ResponseEntity.badRequest().build();
@@ -162,47 +128,14 @@ public class RatingsController {
 
         UserId userId = new UserId(uId);
 
-        var getRatingsByUserIdQuery = new GetRatingsByUserIdQuery(userId);
-        var ratings = this.ratingQueryService.handle(getRatingsByUserIdQuery);
+        var getRatingsByUserIdQuery = new GetAllRatingProductByUserIdQuery(userId);
+        var ratings = this.ratingProductQueryService.handle(getRatingsByUserIdQuery);
 
         var ratingsResource = ratings.stream()
-                .map(RatingResourceFromEntityAssembler::toResourceFromEntity)
+                .map(RatingProductResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(ratingsResource);
     }
 
-    @Operation(
-            summary = "Ratings by Advisory",
-            description = "Fetch Ratings by Advisory Id",
-            operationId = "getByAdvisoryId",
-            responses = {
-                    @ApiResponse(
-                            responseCode = "200",
-                            description = "Successful operation",
-                            content = @Content(
-                                    mediaType = "application/json",
-                                    schema = @Schema(implementation = RatingResource.class)
-                            )
-                    )
-            }
-    )
-    @GetMapping("/advisory")
-    public ResponseEntity<List<RatingResource>> getByAdvisoryId(@RequestParam(name = "advisoryId") Long aId){
-
-        if (aId == null ) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        AdvisoryId advisoryId = new AdvisoryId(aId);
-
-        var getRatingsByAdvisoryIdQuery = new GetRatingsByAdvisoryIdQuery(advisoryId);
-        var ratings = this.ratingQueryService.handle(getRatingsByAdvisoryIdQuery);
-
-        var ratingsResource = ratings.stream()
-                .map(RatingResourceFromEntityAssembler::toResourceFromEntity)
-                .collect(Collectors.toList());
-
-        return ResponseEntity.ok(ratingsResource);
-    }
 }

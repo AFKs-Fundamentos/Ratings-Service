@@ -1,41 +1,41 @@
 package com.pcmaster.afk.ratings.application.internal.commandservices;
 
-import com.pcmaster.afk.ratings.domain.model.aggregates.Rating;
-import com.pcmaster.afk.ratings.domain.model.commands.CreateRatingCommand;
-import com.pcmaster.afk.ratings.domain.model.commands.DeleteRatingCommand;
-import com.pcmaster.afk.ratings.domain.services.RatingCommandService;
-import com.pcmaster.afk.ratings.infrastructure.persistence.jpa.repositories.RatingRepository;
+import com.pcmaster.afk.ratings.domain.model.aggregates.RatingProduct;
+import com.pcmaster.afk.ratings.domain.model.commands.CreateRatingProductCommand;
+import com.pcmaster.afk.ratings.domain.model.commands.DeleteRatingProductCommand;
+import com.pcmaster.afk.ratings.domain.services.RatingProductCommandService;
+import com.pcmaster.afk.ratings.infrastructure.persistence.jpa.repositories.RatingProductRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class RatingCommandServiceImpl implements RatingCommandService {
+public class RatingCommandServiceImpl implements RatingProductCommandService {
 
-    private final RatingRepository ratingRepository;
+    private final RatingProductRepository ratingProductRepository;
 
-    public RatingCommandServiceImpl(RatingRepository ratingRepository){
-        this.ratingRepository = ratingRepository;
+    public RatingCommandServiceImpl(RatingProductRepository ratingProductRepository){
+        this.ratingProductRepository = ratingProductRepository;
     }
 
     @Override
-    public Long handle(CreateRatingCommand command) {
+    public Long handle(CreateRatingProductCommand command) {
 
-        var rating = new Rating(command);
+        var ratingProduct = new RatingProduct(command);
         try {
-            this.ratingRepository.save(rating);
+            this.ratingProductRepository.save(ratingProduct);
         } catch (Exception e){
-            throw new IllegalArgumentException("Error while saving rating: " + e.getMessage());
+            throw new IllegalArgumentException("Error while saving rating product: " + e.getMessage());
         }
 
-        return rating.getId();
+        return ratingProduct.getId();
     }
 
     @Override
-    public void handle(DeleteRatingCommand command) {
+    public void handle(DeleteRatingProductCommand command) {
 
         try{
-            this.ratingRepository.deleteById(command.ratingId());
+            this.ratingProductRepository.deleteById(command.ratingProductId());
         } catch (Exception e) {
-            throw new IllegalArgumentException("Error while deleting Rating: " + e.getMessage());
+            throw new IllegalArgumentException("Error while deleting Rating Product: " + e.getMessage());
         }
 
     }
