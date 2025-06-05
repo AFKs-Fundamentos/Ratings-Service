@@ -1,0 +1,82 @@
+package com.pcmaster.afk.ratings.interfaces.rest;
+
+import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsTechByUserIdQuery;
+import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsUserQuery;
+import com.pcmaster.afk.ratings.domain.model.queries.GetRatingUserByIdQuery;
+import com.pcmaster.afk.ratings.domain.model.valueobjects.UserId;
+import com.pcmaster.afk.ratings.domain.services.RatingUserCommandService;
+import com.pcmaster.afk.ratings.domain.services.RatingUserQueryService;
+import com.pcmaster.afk.ratings.interfaces.rest.resources.CreateRatingUserResource;
+import com.pcmaster.afk.ratings.interfaces.rest.resources.RatingUserResource;
+import com.pcmaster.afk.ratings.interfaces.rest.transform.CreateRatingUserCommandFromResourceAssembler;
+import com.pcmaster.afk.ratings.interfaces.rest.transform.RatingUserResourceFromEntityAssembler;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@CrossOrigin(origins = "*", methods = { RequestMethod.POST, RequestMethod.GET, RequestMethod.PUT, RequestMethod.DELETE })
+@RestController
+@RequestMapping(value = "/api/v1/rating/user", produces = MediaType.APPLICATION_JSON_VALUE)
+@Tag(name = "Rating User", description = "Rating User Management Endpoints")
+public class RatingUserController {
+
+    private final RatingUserQueryService ratingUserQueryService;
+    private final RatingUserCommandService ratingUserCommandService;
+
+    public RatingUserController(RatingUserQueryService ratingUserQueryService, RatingUserCommandService ratingUserCommandService){
+        this.ratingUserQueryService = ratingUserQueryService;
+        this.ratingUserCommandService = ratingUserCommandService;
+    }
+
+    @PostMapping
+    public ResponseEntity<RatingUserResource> createRatingUser(@RequestBody CreateRatingUserResource resource){
+        var createRatingUserCommand = CreateRatingUserCommandFromResourceAssembler
+                .toCommandFromResource(resource);
+
+        var ratingUserId = this.ratingUserCommandService.handle(createRatingUserCommand);
+
+        if(ratingUserId.equals(0L)){
+            return ResponseEntity.badRequest().build();
+        }
+
+        var getRatingByIdQuery = new GetRatingUserByIdQuery(ratingUserId);
+        var optionalRating = this.ratingUserQueryService.handle(getRatingByIdQuery);
+
+        var ratingResource = RatingUserResourceFromEntityAssembler.toResourceFromEntity(optionalRating.get());
+
+        return new ResponseEntity<>(ratingResource, HttpStatus.CREATED);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RatingUserResource>> getAllRatingUser() {
+        var getAllRatingQuery = new GetAllRatingsUserQuery();
+        var ratings = this.ratingUserQueryService.handle(getAllRatingQuery);
+        var ratingsResource = ratings.stream()
+                .map(RatingUserResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(ratingsResource);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<List<RatingUserResource>> getTechRatingsBYUserId(@RequestParam(name = "userId") Long uId){
+        if (uId == null ) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        UserId userId = new UserId(uId);
+
+        var getRatingByUserIdQuery = new GetAllRatingsTechByUserIdQuery(userId);
+        var ratings = this.ratingUserQueryService.handle(getRatingByUserIdQuery);
+
+        var ratingsResource = ratings.stream()
+                .map(RatingUserResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ratingsResource);
+    }
+}
