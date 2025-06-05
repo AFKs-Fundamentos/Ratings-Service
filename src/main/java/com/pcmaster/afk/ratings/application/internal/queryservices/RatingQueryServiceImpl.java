@@ -1,45 +1,35 @@
 package com.pcmaster.afk.ratings.application.internal.queryservices;
 
-import com.pcmaster.afk.ratings.domain.model.aggregates.Rating;
+import com.pcmaster.afk.ratings.domain.model.aggregates.RatingProduct;
 import com.pcmaster.afk.ratings.domain.model.queries.*;
-import com.pcmaster.afk.ratings.domain.services.RatingQueryService;
-import com.pcmaster.afk.ratings.infrastructure.persistence.jpa.repositories.RatingRepository;
+import com.pcmaster.afk.ratings.domain.services.RatingProductQueryService;
+import com.pcmaster.afk.ratings.infrastructure.persistence.jpa.repositories.RatingProductRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class RatingQueryServiceImpl implements RatingQueryService {
+public class RatingQueryServiceImpl implements RatingProductQueryService {
 
-    private final RatingRepository ratingRepository;
+    private final RatingProductRepository ratingProductRepository;
 
-    public RatingQueryServiceImpl(RatingRepository ratingRepository){
-        this.ratingRepository = ratingRepository;
+    public RatingQueryServiceImpl(RatingProductRepository ratingProductRepository){
+        this.ratingProductRepository = ratingProductRepository;
     }
 
     @Override
-    public List<Rating> handle(GetAllRatingsQuery query) {
-        return this.ratingRepository.findAll();
+    public List<RatingProduct> handle(GetAllRatingsProductQuery query) {
+        return this.ratingProductRepository.findAll();
     }
 
     @Override
-    public Optional<Rating> handle(GetRatingByIdQuery query) {
-        return this.ratingRepository.findById(query.ratingId());
+    public Optional<RatingProduct> handle(GetRatingProductByIdQuery query) {
+        return this.ratingProductRepository.findById(query.ratingProductId());
     }
 
     @Override
-    public List<Rating> handle(GetRatingsByProductIdQuery query) {
-        return this.ratingRepository.findByProductId(query.productId());
-    }
-
-    @Override
-    public List<Rating> handle(GetRatingsByUserIdQuery query) {
-        return this.ratingRepository.findByUserId(query.userId());
-    }
-
-    @Override
-    public List<Rating> handle(GetRatingsByAdvisoryIdQuery query) {
-        return this.ratingRepository.findByAdvisoryId(query.advisoryId());
+    public List<RatingProduct> handle(GetAllRatingProductByUserIdQuery query) {
+        return this.ratingProductRepository.findByUserId(query.userId());
     }
 }

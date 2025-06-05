@@ -1,12 +1,11 @@
 package com.pcmaster.afk.ratings.interfaces.rest.resources;
 
-public record RatingResource(
+public record RatingProductResource(
         Long id,
-        String type,
-        String description,
         int punctuation,
+        String description,
         Long userId,
         Long productId,
-        Long advisoryId
+        String createdAt
 ) {
 }
