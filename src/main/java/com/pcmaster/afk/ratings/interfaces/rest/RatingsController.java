@@ -1,8 +1,6 @@
 package com.pcmaster.afk.ratings.interfaces.rest;
 
 import com.pcmaster.afk.ratings.domain.model.queries.*;
-import com.pcmaster.afk.ratings.domain.model.valueobjects.AdvisoryId;
-import com.pcmaster.afk.ratings.domain.model.valueobjects.ProductId;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.UserId;
 import com.pcmaster.afk.ratings.domain.services.RatingProductCommandService;
 import com.pcmaster.afk.ratings.domain.services.RatingProductQueryService;
@@ -38,9 +36,9 @@ public class RatingsController {
     }
 
     @Operation(
-            summary = "Add new Rating",
-            description = "Add a new Rating for PCMaster",
-            operationId = "createRating",
+            summary = "Add new Rating Product",
+            description = "Add a new rating for product",
+            operationId = "createRatingProduct",
             responses = {
                     @ApiResponse(
                             responseCode = "201",
@@ -80,9 +78,9 @@ public class RatingsController {
     }
 
     @Operation(
-            summary = "Fetch all Ratings",
-            description = "Fetch all Ratings created",
-            operationId = "getRatings",
+            summary = "Fetch all Product Ratings",
+            description = "Fetch all Product Ratings created",
+            operationId = "getRatingsProduct",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -105,8 +103,8 @@ public class RatingsController {
     }
 
     @Operation(
-            summary = "Ratings by User",
-            description = "Fetch Ratings by User Id",
+            summary = "Product Ratings by User",
+            description = "Fetch Product Ratings made by User",
             operationId = "getByUserId",
             responses = {
                     @ApiResponse(

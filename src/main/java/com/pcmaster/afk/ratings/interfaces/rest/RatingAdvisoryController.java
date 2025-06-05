@@ -10,6 +10,10 @@ import com.pcmaster.afk.ratings.interfaces.rest.resources.CreateRatingAdvisoryRe
 import com.pcmaster.afk.ratings.interfaces.rest.resources.RatingAdvisoryResource;
 import com.pcmaster.afk.ratings.interfaces.rest.transform.CreateRatingAdvisoryCommandFromResourceAssembler;
 import com.pcmaster.afk.ratings.interfaces.rest.transform.RatingAdvisoryResourceFromEntityAssembler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -34,6 +38,29 @@ public class RatingAdvisoryController {
 
     }
 
+    @Operation(
+            summary = "Add new Rating Advisory",
+            description = "Add a new rating for advisory",
+            operationId = "createRatingAdvisory",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CreateRatingAdvisoryResource.class)
+                            )
+                    ),
+                    @ApiResponse (
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content = @Content (
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RuntimeException.class)
+                            )
+                    )
+            }
+    )
     @PostMapping
     public ResponseEntity<RatingAdvisoryResource> createRatingAdvisory(@RequestBody CreateRatingAdvisoryResource resource){
         var createRatingAdvisoryCommand = CreateRatingAdvisoryCommandFromResourceAssembler
@@ -53,6 +80,21 @@ public class RatingAdvisoryController {
         return new ResponseEntity<>(ratingResource, HttpStatus.CREATED);
     }
 
+    @Operation(
+            summary = "Fetch all Advisory Ratings",
+            description = "Fetch all Advisory Ratings created",
+            operationId = "getRatingsAdvisory",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingAdvisoryResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping
     public ResponseEntity<List<RatingAdvisoryResource>> getAllRatingAdvisory() {
         var getAllRatingQuery = new GetAllRatingsAdvisoryQuery();
@@ -63,6 +105,21 @@ public class RatingAdvisoryController {
         return ResponseEntity.ok(ratingResources);
     }
 
+    @Operation(
+            summary = "Advisory Ratings by User",
+            description = "Fetch Advisory Ratings made by User",
+            operationId = "getByUserId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingAdvisoryResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping("/user")
     public ResponseEntity<List<RatingAdvisoryResource>> getAdvisoryByUserId(@RequestParam(name = "userId") Long uId){
 

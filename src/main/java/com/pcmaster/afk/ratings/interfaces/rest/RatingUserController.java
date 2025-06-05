@@ -10,6 +10,10 @@ import com.pcmaster.afk.ratings.interfaces.rest.resources.CreateRatingUserResour
 import com.pcmaster.afk.ratings.interfaces.rest.resources.RatingUserResource;
 import com.pcmaster.afk.ratings.interfaces.rest.transform.CreateRatingUserCommandFromResourceAssembler;
 import com.pcmaster.afk.ratings.interfaces.rest.transform.RatingUserResourceFromEntityAssembler;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,6 +37,29 @@ public class RatingUserController {
         this.ratingUserCommandService = ratingUserCommandService;
     }
 
+    @Operation(
+            summary = "Add new Rating User",
+            description = "Add a new rating for technical user",
+            operationId = "createRatingUser",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "201",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = CreateRatingUserResource.class)
+                            )
+                    ),
+                    @ApiResponse (
+                            responseCode = "400",
+                            description = "Bad Request",
+                            content = @Content (
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RuntimeException.class)
+                            )
+                    )
+            }
+    )
     @PostMapping
     public ResponseEntity<RatingUserResource> createRatingUser(@RequestBody CreateRatingUserResource resource){
         var createRatingUserCommand = CreateRatingUserCommandFromResourceAssembler
@@ -52,6 +79,21 @@ public class RatingUserController {
         return new ResponseEntity<>(ratingResource, HttpStatus.CREATED);
     }
 
+    @Operation(
+            summary = "Fetch all Technical Ratings",
+            description = "Fetch all Technical Ratings created",
+            operationId = "getRatingsTechnical",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingUserResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping
     public ResponseEntity<List<RatingUserResource>> getAllRatingUser() {
         var getAllRatingQuery = new GetAllRatingsUserQuery();
@@ -62,6 +104,21 @@ public class RatingUserController {
         return ResponseEntity.ok(ratingsResource);
     }
 
+    @Operation(
+            summary = "Technical Ratings by User",
+            description = "Fetch Technical Ratings made by User",
+            operationId = "getByUserId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingUserResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping("/user")
     public ResponseEntity<List<RatingUserResource>> getTechRatingsBYUserId(@RequestParam(name = "userId") Long uId){
         if (uId == null ) {

@@ -16,13 +16,13 @@ public class OpenApiConfiguration {
         var openApi = new OpenAPI();
         openApi
                 .info(new Info()
-                        .title("PCMaster service API")
+                        .title("PCMaster Ratings Service API")
                         .description("Ratings PCMaster Service.")
                         .version("v1.0.0")
                         .license(new License().name("Apache 2.0")
                                 .url("https://springdoc.org")))
                 .externalDocs(new ExternalDocumentation()
-                        .description("PCMaster Documentation")
+                        .description("PCMaster Services Documentation")
                         .url("https://github.com/"));
         return openApi;
     }
