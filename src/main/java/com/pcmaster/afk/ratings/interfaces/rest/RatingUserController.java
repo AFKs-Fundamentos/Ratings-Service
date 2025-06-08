@@ -139,6 +139,21 @@ public class RatingUserController {
         return ResponseEntity.ok(ratingsResource);
     }
 
+    @Operation(
+            summary = "Ratings by Technical User",
+            description = "Fetch Ratings made by Technical User",
+            operationId = "getByTechnicalId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingUserResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping("/technical")
     public ResponseEntity<List<RatingUserResource>> getRatingUserByTechnicalId(@RequestParam(name = "technicalId") Long tId){
         if (tId == null ) {

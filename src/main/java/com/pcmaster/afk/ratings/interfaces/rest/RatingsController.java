@@ -137,6 +137,21 @@ public class RatingsController {
         return ResponseEntity.ok(ratingsResource);
     }
 
+    @Operation(
+            summary = "Ratings by Product",
+            description = "Fetch Ratings made by Product",
+            operationId = "getByProductId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingProductResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping("/product")
     public ResponseEntity<List<RatingProductResource>> getByProductId(@RequestParam(name = "productId") Long pId){
         if (pId == null ) {

@@ -141,6 +141,21 @@ public class RatingAdvisoryController {
         return ResponseEntity.ok(ratingsResource);
     }
 
+    @Operation(
+            summary = "Ratings by Advisory",
+            description = "Fetch Ratings made by Advisory",
+            operationId = "getByAdvisoryId",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "Successful operation",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = RatingAdvisoryResource.class)
+                            )
+                    )
+            }
+    )
     @GetMapping("/advisory")
     public ResponseEntity<List<RatingAdvisoryResource>> getAdvisoryByAdvisoryId(@RequestParam(name = "advisoryId") Long aId){
         if (aId == null ) {
