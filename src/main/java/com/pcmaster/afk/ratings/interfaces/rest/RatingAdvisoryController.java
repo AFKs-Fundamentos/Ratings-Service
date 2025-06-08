@@ -1,8 +1,10 @@
 package com.pcmaster.afk.ratings.interfaces.rest;
 
+import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingAdvisoryByAdvisoryIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingAdvisoryByUserIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsAdvisoryQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingAdvisoryByIdQuery;
+import com.pcmaster.afk.ratings.domain.model.valueobjects.AdvisoryId;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.UserId;
 import com.pcmaster.afk.ratings.domain.services.RatingAdvisoryCommandService;
 import com.pcmaster.afk.ratings.domain.services.RatingAdvisoryQueryService;
@@ -136,6 +138,22 @@ public class RatingAdvisoryController {
                 .map(RatingAdvisoryResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());
 
+        return ResponseEntity.ok(ratingsResource);
+    }
+
+    @GetMapping("/advisory")
+    public ResponseEntity<List<RatingAdvisoryResource>> getAdvisoryByAdvisoryId(@RequestParam(name = "advisoryId") Long aId){
+        if (aId == null ) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        AdvisoryId advisoryId = new AdvisoryId(aId);
+
+        var getRatingsByAdvisoryIdQuery = new GetAllRatingAdvisoryByAdvisoryIdQuery(advisoryId);
+        var ratings = this.ratingAdvisoryQueryService.handle(getRatingsByAdvisoryIdQuery);
+        var ratingsResource = ratings.stream()
+                .map(RatingAdvisoryResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(ratingsResource);
     }
 }

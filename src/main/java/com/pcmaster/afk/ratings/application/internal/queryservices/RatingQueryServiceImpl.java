@@ -32,4 +32,9 @@ public class RatingQueryServiceImpl implements RatingProductQueryService {
     public List<RatingProduct> handle(GetAllRatingProductByUserIdQuery query) {
         return this.ratingProductRepository.findByUserId(query.userId());
     }
+
+    @Override
+    public List<RatingProduct> handle(GetAllRatingProductByProductIdQuery query) {
+        return this.ratingProductRepository.findByProductId(query.productId());
+    }
 }

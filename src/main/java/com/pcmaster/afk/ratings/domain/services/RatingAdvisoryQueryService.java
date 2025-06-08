@@ -1,6 +1,7 @@
 package com.pcmaster.afk.ratings.domain.services;
 
 import com.pcmaster.afk.ratings.domain.model.aggregates.RatingAdvisory;
+import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingAdvisoryByAdvisoryIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingAdvisoryByUserIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsAdvisoryQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingAdvisoryByIdQuery;
@@ -13,4 +14,6 @@ public interface RatingAdvisoryQueryService {
     Optional<RatingAdvisory> handle(GetRatingAdvisoryByIdQuery query);
 
     List<RatingAdvisory> handle(GetAllRatingAdvisoryByUserIdQuery query);
+
+    List<RatingAdvisory> handle(GetAllRatingAdvisoryByAdvisoryIdQuery query);
 }

@@ -1,6 +1,7 @@
 package com.pcmaster.afk.ratings.application.internal.queryservices;
 
 import com.pcmaster.afk.ratings.domain.model.aggregates.RatingAdvisory;
+import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingAdvisoryByAdvisoryIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingAdvisoryByUserIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsAdvisoryQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingAdvisoryByIdQuery;
@@ -33,5 +34,10 @@ public class RatingAdvisoryQueryServiceImpl implements RatingAdvisoryQueryServic
     @Override
     public List<RatingAdvisory> handle(GetAllRatingAdvisoryByUserIdQuery query) {
         return this.ratingAdvisoryRepository.findByUserId(query.userId());
+    }
+
+    @Override
+    public List<RatingAdvisory> handle(GetAllRatingAdvisoryByAdvisoryIdQuery query) {
+        return this.ratingAdvisoryRepository.findByAdvisoryId(query.advisoryId());
     }
 }

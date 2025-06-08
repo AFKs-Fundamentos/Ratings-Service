@@ -1,6 +1,7 @@
 package com.pcmaster.afk.ratings.domain.services;
 
 import com.pcmaster.afk.ratings.domain.model.aggregates.RatingUser;
+import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingUserByTechnicalIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsTechByUserIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsUserQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingUserByIdQuery;
@@ -13,4 +14,6 @@ public interface RatingUserQueryService {
     Optional<RatingUser> handle(GetRatingUserByIdQuery query);
 
     List<RatingUser> handle(GetAllRatingsTechByUserIdQuery query);
+
+    List<RatingUser> handle(GetAllRatingUserByTechnicalIdQuery query);
 }

@@ -1,6 +1,7 @@
 package com.pcmaster.afk.ratings.interfaces.rest;
 
 import com.pcmaster.afk.ratings.domain.model.queries.*;
+import com.pcmaster.afk.ratings.domain.model.valueobjects.ProductId;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.UserId;
 import com.pcmaster.afk.ratings.domain.services.RatingProductCommandService;
 import com.pcmaster.afk.ratings.domain.services.RatingProductQueryService;
@@ -128,6 +129,24 @@ public class RatingsController {
 
         var getRatingsByUserIdQuery = new GetAllRatingProductByUserIdQuery(userId);
         var ratings = this.ratingProductQueryService.handle(getRatingsByUserIdQuery);
+
+        var ratingsResource = ratings.stream()
+                .map(RatingProductResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ratingsResource);
+    }
+
+    @GetMapping("/product")
+    public ResponseEntity<List<RatingProductResource>> getByProductId(@RequestParam(name = "productId") Long pId){
+        if (pId == null ) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        ProductId productId = new ProductId(pId);
+
+        var getRatingByProductIdQuery = new GetAllRatingProductByProductIdQuery(productId);
+        var ratings = this.ratingProductQueryService.handle(getRatingByProductIdQuery);
 
         var ratingsResource = ratings.stream()
                 .map(RatingProductResourceFromEntityAssembler::toResourceFromEntity)

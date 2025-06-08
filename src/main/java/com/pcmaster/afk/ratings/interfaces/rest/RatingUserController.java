@@ -1,8 +1,10 @@
 package com.pcmaster.afk.ratings.interfaces.rest;
 
+import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingUserByTechnicalIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsTechByUserIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsUserQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingUserByIdQuery;
+import com.pcmaster.afk.ratings.domain.model.valueobjects.TechnicalId;
 import com.pcmaster.afk.ratings.domain.model.valueobjects.UserId;
 import com.pcmaster.afk.ratings.domain.services.RatingUserCommandService;
 import com.pcmaster.afk.ratings.domain.services.RatingUserQueryService;
@@ -130,6 +132,22 @@ public class RatingUserController {
         var getRatingByUserIdQuery = new GetAllRatingsTechByUserIdQuery(userId);
         var ratings = this.ratingUserQueryService.handle(getRatingByUserIdQuery);
 
+        var ratingsResource = ratings.stream()
+                .map(RatingUserResourceFromEntityAssembler::toResourceFromEntity)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(ratingsResource);
+    }
+
+    @GetMapping("/technical")
+    public ResponseEntity<List<RatingUserResource>> getRatingUserByTechnicalId(@RequestParam(name = "technicalId") Long tId){
+        if (tId == null ) {
+            return ResponseEntity.badRequest().build();
+        }
+        TechnicalId technicalId = new TechnicalId(tId);
+        var getRatingsByTechnicalIdQuery = new GetAllRatingUserByTechnicalIdQuery(technicalId);
+
+        var ratings = this.ratingUserQueryService.handle(getRatingsByTechnicalIdQuery);
         var ratingsResource = ratings.stream()
                 .map(RatingUserResourceFromEntityAssembler::toResourceFromEntity)
                 .collect(Collectors.toList());

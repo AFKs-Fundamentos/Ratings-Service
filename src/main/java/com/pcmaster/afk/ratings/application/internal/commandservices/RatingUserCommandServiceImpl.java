@@ -25,6 +25,6 @@ public class RatingUserCommandServiceImpl implements RatingUserCommandService {
             throw new IllegalArgumentException("Error while saving rating User: " + e.getMessage());
         }
 
-        return ratingUser.getUserId();
+        return ratingUser.getId();
     }
 }

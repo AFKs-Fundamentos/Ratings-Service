@@ -1,6 +1,7 @@
 package com.pcmaster.afk.ratings.application.internal.queryservices;
 
 import com.pcmaster.afk.ratings.domain.model.aggregates.RatingUser;
+import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingUserByTechnicalIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsTechByUserIdQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetAllRatingsUserQuery;
 import com.pcmaster.afk.ratings.domain.model.queries.GetRatingUserByIdQuery;
@@ -33,5 +34,10 @@ public class RatingUserQueryServiceImpl implements RatingUserQueryService {
     @Override
     public List<RatingUser> handle(GetAllRatingsTechByUserIdQuery query) {
         return this.ratingUserRepository.findByUserId(query.userId());
+    }
+
+    @Override
+    public List<RatingUser> handle(GetAllRatingUserByTechnicalIdQuery query) {
+        return this.ratingUserRepository.findByTechnicalId(query.technicalId());
     }
 }
